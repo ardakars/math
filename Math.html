@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matematik Serüveni ✨👑</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --pembe: #ff85a2; --koyu-pembe: #f72585; --mor: #7209b7; --mavi: #4cc9f0; --arkaplan: #fff0f3;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: var(--arkaplan);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0; padding: 10px;
+        }
+
+        #oyun-kapsayici {
+            background: white; padding: 25px; border-radius: 40px;
+            box-shadow: 0 15px 35px rgba(247, 37, 133, 0.2);
+            text-align: center; border: 6px solid var(--pembe);
+            width: 750px; max-width: 98%;
+        }
+
+        .giris-layout { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+        .sol-panel, .sag-panel { flex: 1; min-width: 300px; }
+
+        .karakter-yolculugu {
+            background: #fdf0f4; border-radius: 20px; padding: 10px;
+            margin-bottom: 15px; border: 1px solid #ffdae0; text-align: left;
+        }
+        
+        .yolculuk-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; margin: 5px 0; color: #555; }
+        .yolculuk-item b { color: var(--koyu-pembe); }
+
+        #zaman-bar-kapsayici {
+            width: 100%; height: 12px; background: #eee;
+            border-radius: 6px; margin: 15px 0; overflow: hidden; display: none;
+        }
+        #zaman-bar { width: 100%; height: 100%; background: var(--mavi); transition: width 0.1s linear; }
+
+        .unvan-etiketi {
+            background: var(--mor); color: white;
+            padding: 8px 20px; border-radius: 20px;
+            font-size: 16px; display: inline-block; margin-bottom: 10px;
+            font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .mod-butonu {
+            background: white; border: 3px solid var(--mor); color: var(--mor);
+            padding: 15px; margin: 8px 0; border-radius: 15px;
+            cursor: pointer; font-weight: bold; font-size: 18px;
+            transition: 0.3s; width: 100%; display: block;
+        }
+        .mod-butonu:hover { background: var(--mor); color: white; transform: translateX(5px); }
+
+        .soru-alani {
+            font-size: 45px; color: var(--koyu-pembe);
+            margin: 15px 0; min-height: 140px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .problem-metni {
+            font-size: 19px; line-height: 1.5; color: #444;
+            padding: 20px; background: #fff8f9; border-radius: 25px; border: 1px solid #ffdae0;
+        }
+
+        input {
+            font-size: 32px; width: 160px; padding: 12px;
+            border: 4px solid var(--mavi); border-radius: 20px;
+            text-align: center; outline: none;
+        }
+
+        .kontrol-btn {
+            background: linear-gradient(45deg, var(--koyu-pembe), var(--pembe));
+            color: white; border: none; padding: 18px 40px;
+            font-size: 24px; border-radius: 30px; cursor: pointer;
+            margin-top: 20px; width: 100%;
+        }
+
+        .skor-tablosu {
+            background: #fffafa; border-radius: 20px; padding: 15px; border: 2px dashed var(--pembe);
+        }
+        .skor-tablosu h3 { text-align: center; margin-top: 0; color: var(--mor); }
+
+        .skor-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #ffdae0; font-size: 14px;}
+        .gizle { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="oyun-kapsayici">
+    <div id="giris-ekrani">
+        <h1 style="color: var(--koyu-pembe);">Matematik Serüveni 🌸</h1>
+        <div class="giris-layout">
+            <div class="sol-panel">
+                <button class="mod-butonu" onclick="oyunuBaslat('*')">✖️ Çarpma İşlemi</button>
+                <button class="mod-butonu" onclick="oyunuBaslat('/')">➗ Bölme İşlemi</button>
+                <button class="mod-butonu" onclick="oyunuBaslat('karisik')">✨ Karışık Macera</button>
+                <button class="mod-butonu" style="border-color: #4cc9f0; color: #2fb4df;" onclick="oyunuBaslat('problem')">📖 Sihirli Problemler</button>
+            </div>
+            <div class="sag-panel">
+                <div class="karakter-yolculugu">
+                    <h4 style="margin: 0 0 10px 0; color: var(--mor); text-align: center;">Karakter Seviyeleri ✨</h4>
+                    <div class="yolculuk-item"><b>0+</b> <span>🌱 Tohum</span></div>
+                    <div class="yolculuk-item"><b>50+</b> <span>🌸 Çiçek</span></div>
+                    <div class="yolculuk-item"><b>150+</b> <span>🦋 Kelebek</span></div>
+                    <div class="yolculuk-item"><b>300+</b> <span>👑 Kraliçe</span></div>
+                </div>
+                <div class="skor-tablosu">
+                    <h3>🏆 En İyi Skorlar</h3>
+                    <div id="liderlik-listesi"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="oyun-ekrani" class="gizle">
+        <div id="unvan" class="unvan-etiketi">Yeni Başlayan 🌱</div>
+        <div style="display: flex; justify-content: space-between; font-weight: bold; margin: 10px 0; font-size: 18px;">
+            <span style="color: var(--mor);">Puan: <span id="puan">0</span></span>
+            <span id="canlar">❤️❤️❤️</span>
+        </div>
+        <div id="zaman-bar-kapsayici"><div id="zaman-bar"></div></div>
+        <div class="soru-alani" id="soru">?</div>
+        <input type="number" id="cevap" inputmode="numeric" placeholder="?">
+        <br>
+        <button class="kontrol-btn" onclick="kontrolEt()">Cevapla! ✨</button>
+        <div id="mesaj" style="margin-top:10px; font-weight:bold; height: 30px; font-size: 18px;"></div>
+    </div>
+</div>
+
+<script>
+    let seciliMod, dogruCevap, puan = 0, can = 3, audioCtx, zamanlayici, kalanZaman, sureBittiMi = false;
+    const MAX_ZAMAN = 25;
+
+    window.onload = skorlariGoster;
+
+    function sesHazirla() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    
+    function sesCal(freq, type, dur) {
+        if(!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + dur);
+        osc.start(); osc.stop(audioCtx.currentTime + dur);
+    }
+
+    function unvanGuncelle() {
+        let u = "Yeni Başlayan 🌱";
+        if (puan >= 300) u = "Matematik Kraliçesi 👑";
+        else if (puan >= 150) u = "Süper Kelebek 🦋";
+        else if (puan >= 50) u = "Çalışkan Çiçek 🌸";
+        document.getElementById('unvan').innerText = u;
+    }
+
+    function zamanBaslat() {
+        clearInterval(zamanlayici);
+        kalanZaman = MAX_ZAMAN;
+        sureBittiMi = false;
+        const bar = document.getElementById('zaman-bar');
+        bar.style.backgroundColor = "var(--mavi)";
+        document.getElementById('zaman-bar-kapsayici').style.display = 'block';
+        
+        zamanlayici = setInterval(() => {
+            kalanZaman -= 0.1;
+            bar.style.width = (kalanZaman / MAX_ZAMAN) * 100 + "%";
+            if (kalanZaman <= 0) {
+                clearInterval(zamanlayici);
+                sureBittiMi = true;
+                bar.style.width = "0%";
+                bar.style.backgroundColor = "#ff4d6d";
+                document.getElementById('mesaj').innerText = "Acele etme, sabırla çözebilirsin ✨";
+                document.getElementById('mesaj').style.color = "#888";
+            }
+        }, 100);
+    }
+
+    function problemUret() {
+        const tipler = [
+            () => { let t = Math.floor(Math.random()*12)+4; return { s: `Bir bahçede ${t} tavşan zıplıyor. Tavşanların toplam kaç ayağı vardır?`, c: t*4 }; },
+            () => { let f = Math.floor(Math.random()*8)+2, a = Math.floor(Math.random()*7)+4; return { s: `Tanesi ${f} TL olan tokalardan ${a} tane alırsak kaç TL öderiz?`, c: f*a }; },
+            () => { let k = Math.floor(Math.random()*5)+3, y = [6, 10, 12][Math.floor(Math.random()*3)]; return { s: `Her birinde ${y} boya kalemi olan ${k} kutuda toplam kaç kalem vardır?`, c: k*y }; }
+        ];
+        return tipler[Math.floor(Math.random() * tipler.length)]();
+    }
+
+    function oyunuBaslat(mod) {
+        sesHazirla(); seciliMod = mod; puan = 0; can = 3;
+        document.getElementById('giris-ekrani').classList.add('gizle');
+        document.getElementById('oyun-ekrani').classList.remove('gizle');
+        yeniSoru();
+    }
+
+    function yeniSoru() {
+        if(can <= 0) return;
+        unvanGuncelle();
+        const se = document.getElementById('soru');
+        if (seciliMod === 'problem') {
+            let p = problemUret(); se.innerHTML = `<div class="problem-metni">${p.s}</div>`; dogruCevap = p.c;
+        } else {
+            let is = seciliMod === 'karisik' ? (Math.random() > 0.5 ? '*' : '/') : seciliMod;
+            let s1 = Math.floor(Math.random()*9)+2, s2 = Math.floor(Math.random()*9)+2;
+            if(is === '*') { dogruCevap = s1*s2; se.innerText = `${s1} × ${s2}`; }
+            else { s1 = s1*s2; dogruCevap = s2; se.innerText = `${s1} ÷ ${s1/s2}`; }
+        }
+        document.getElementById('cevap').value = ''; document.getElementById('cevap').focus();
+        document.getElementById('mesaj').innerText = "";
+        zamanBaslat();
+    }
+
+    function kontrolEt() {
+        const cev = parseInt(document.getElementById('cevap').value);
+        if (isNaN(cev)) return;
+
+        if (cev === dogruCevap) {
+            clearInterval(zamanlayici);
+            let ekPuan = 0;
+            if (!sureBittiMi) {
+                // Süre bitmeden: 10 puan + zaman bonusu
+                ekPuan = (seciliMod === 'problem' ? 20 : 10) + Math.floor(kalanZaman / 2);
+                document.getElementById('mesaj').innerText = "Hızlı ve Doğru! Harikasın! 🌈";
+            } else {
+                // Süre bittikten sonra: Sabit 5 puan
+                ekPuan = 5;
+                document.getElementById('mesaj').innerText = "Doğru! Sabrın sana puan kazandırdı ✨";
+            }
+            
+            puan += ekPuan;
+            document.getElementById('puan').innerText = puan;
+            document.getElementById('mesaj').style.color = "#4CAF50";
+            sesCal(880, 'sine', 0.2);
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.8 } });
+            setTimeout(yeniSoru, 2000);
+        } else {
+            can--; 
+            document.getElementById('canlar').innerText = "❤️".repeat(can);
+            document.getElementById('mesaj').innerText = "Bir daha dene, yapabilirsin! 💕";
+            document.getElementById('mesaj').style.color = "#ff4d6d";
+            sesCal(110, 'triangle', 0.3);
+            if (can <= 0) {
+                clearInterval(zamanlayici);
+                skorKaydet(puan);
+                alert("Oyun bitti! Skorun: " + puan);
+                location.reload();
+            }
+        }
+    }
+
+    function skorKaydet(p) {
+        let sk = JSON.parse(localStorage.getItem('matematikSkorlari')) || [];
+        let d = new Date();
+        sk.push({ puan: p, tarih: d.toLocaleDateString() + " " + d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0') });
+        sk.sort((a,b) => b.puan - a.puan);
+        localStorage.setItem('matematikSkorlari', JSON.stringify(sk.slice(0,5)));
+    }
+
+    function skorlariGoster() {
+        let sk = JSON.parse(localStorage.getItem('matematikSkorlari')) || [];
+        const liste = document.getElementById('liderlik-listesi');
+        if (sk.length === 0) { liste.innerHTML = "<p style='color:gray; font-size:12px;'>Henüz rekor yok! ✨</p>"; return; }
+        liste.innerHTML = sk.map(s => `<div class="skor-item"><span>🏆 ${s.puan}</span><span style="color:gray; font-size:11px;">${s.tarih}</span></div>`).join('');
+    }
+
+    document.getElementById('cevap').addEventListener('keyup', (e) => { if(e.key === "Enter") kontrolEt(); });
+</script>
+</body>
+</html>
