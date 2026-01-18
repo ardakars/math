@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Matematik Serüveni ✨👑</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
@@ -13,99 +13,101 @@
         body {
             font-family: 'Comic Sans MS', 'Verdana', sans-serif;
             background-color: var(--arkaplan);
-            display: flex; justify-content: center; align-items: flex-start;
-            min-height: 100vh; margin: 0; padding: 5px;
-            font-weight: 700; overflow-x: hidden;
+            display: flex; justify-content: center; align-items: flex-start; /* En üste yapıştır */
+            height: 100vh; margin: 0; padding: 0;
+            font-weight: 700; overflow: hidden; /* Sayfanın kaymasını engelle */
         }
 
         #oyun-kapsayici {
-            background: white; border-radius: 25px;
+            background: white; border-radius: 20px;
             box-shadow: 0 10px 25px rgba(247, 37, 133, 0.2);
-            text-align: center; border: 5px solid var(--pembe);
+            text-align: center; border: 4px solid var(--pembe);
             width: 950px; max-width: 98%;
             margin-top: 5px; position: relative;
-            padding: 15px;
+            padding: 10px;
+            display: flex; flex-direction: column;
         }
 
-        /* ANA SAYFA ÜÇLÜ PANEL */
-        .ana-sayfa-layout {
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 10px;
-        }
-        .panel { background: #fffafa; border-radius: 20px; padding: 10px; border: 2px solid #ffdae0; }
-        .panel h3 { margin: 0 0 10px 0; color: var(--mor); font-size: 1.1rem; }
-        .yolculuk-item { display: flex; justify-content: space-between; font-size: 13px; margin: 3px 0; padding: 4px; background: white; border-radius: 8px;}
+        /* GİRİŞ EKRANI - ÜÇLÜ PANEL */
+        .ana-sayfa-layout { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 5px; }
+        .panel { background: #fffafa; border-radius: 15px; padding: 8px; border: 1px solid #ffdae0; }
+        .panel h3 { margin: 0 0 5px 0; font-size: 1rem; color: var(--mor); }
+        .yolculuk-item { display: flex; justify-content: space-between; font-size: 11px; margin: 2px 0; padding: 3px; background: white; border-radius: 5px; }
 
-        /* OYUN EKRANI AYARLARI */
+        /* OYUN EKRANI - DİKEY DARALMAYA ÖZEL */
+        #oyun-ekrani { display: flex; flex-direction: column; align-items: center; }
+
         #bastan-basla-btn {
-            position: absolute; top: 10px; right: 10px;
-            background: #f0f0f0; border: 2px solid #ddd; padding: 6px 10px;
-            border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 12px;
-            z-index: 10;
+            position: absolute; top: 5px; right: 5px;
+            background: #eee; border: 1px solid #ccc; padding: 5px 10px;
+            border-radius: 10px; cursor: pointer; font-size: 11px; z-index: 20;
         }
 
         #unvan {
-            background: var(--mor); color: white; padding: 4px 15px;
-            border-radius: 15px; font-size: 1rem; display: inline-block; margin: 5px 0;
+            background: var(--mor); color: white; padding: 3px 12px;
+            border-radius: 10px; font-size: 0.9rem; margin-bottom: 5px;
         }
 
-        /* SORU FONTU KÜÇÜLTÜLDÜ */
+        .skor-bilgi { font-size: 1.1rem; color: var(--mor); margin-bottom: 5px; width: 80%; display: flex; justify-content: space-between; }
+
+        #zaman-bar-kapsayici { width: 90%; height: 8px; background: #eee; border-radius: 5px; margin-bottom: 10px; }
+        #zaman-bar { height: 100%; background: var(--mavi); border-radius: 5px; width: 100%; }
+
+        /* SORU ALANI - ÇOK DAHA KÜÇÜK VE YUKARIDA */
         .soru-alani {
-            font-size: 3.5rem; /* Eskiden 6rem/12vh idi, şimdi küçüldü */
+            font-size: 2.8rem; /* Font iyice küçüldü */
             color: var(--koyu-pembe);
-            margin: 10px 0; min-height: 80px;
+            margin: 5px 0; min-height: 50px;
             display: flex; align-items: center; justify-content: center;
         }
 
         .problem-metni {
-            font-size: 1.1rem; line-height: 1.3; color: #222;
-            padding: 12px; background: #fff8f9; border-radius: 15px; border: 2px solid #ffdae0;
-            max-width: 85%; margin: 0 auto;
+            font-size: 0.95rem; line-height: 1.2; padding: 10px;
+            background: #fff8f9; border-radius: 12px; border: 1px solid #ffdae0;
+            max-width: 90%;
         }
 
+        /* INPUT VE BUTON - KLAVYE DOSTU */
+        .input-grubu { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
+        
         input {
-            font-size: 2rem; width: 120px; padding: 8px;
-            border: 4px solid var(--mavi); border-radius: 15px;
-            text-align: center; outline: none; font-weight: 900;
+            font-size: 1.8rem; width: 100px; padding: 5px;
+            border: 3px solid var(--mavi); border-radius: 12px;
+            text-align: center; outline: none;
         }
 
         .kontrol-btn {
-            background: var(--koyu-pembe);
-            color: white; border: none; padding: 12px;
-            font-size: 1.3rem; border-radius: 25px; cursor: pointer;
-            margin-top: 10px; width: 100%; font-weight: 900;
-            box-shadow: 0 4px 0px #c01b65;
+            background: var(--koyu-pembe); color: white; border: none;
+            padding: 10px 30px; font-size: 1.2rem; border-radius: 15px;
+            cursor: pointer; font-weight: 900; box-shadow: 0 3px 0px #c01b65;
         }
 
-        /* KLAVYE AÇILDIĞINDA (Numpad olsa bile ekran daralır) */
-        @media (max-height: 600px) {
-            #oyun-kapsayici { padding: 8px; }
-            h1 { font-size: 1.1rem !important; margin: 0 !important; }
-            .soru-alani { font-size: 2.5rem; min-height: 60px; margin: 5px 0; }
-            .problem-metni { font-size: 0.95rem; padding: 8px; }
-            input { font-size: 1.5rem; width: 100px; padding: 5px; }
-            .kontrol-btn { padding: 8px; font-size: 1.1rem; }
-        }
-
-        @media (max-width: 800px) {
-            .ana-sayfa-layout { grid-template-columns: 1fr; }
+        /* KLAVYE MODU: Ekran yüksekliği azaldığında her şeyi tek satıra yaklaştır */
+        @media (max-height: 500px) {
+            #oyun-kapsayici { margin-top: 0; border-width: 2px; }
+            h1 { display: none; } /* Başlığı gizle yer açılsın */
+            .soru-alani { font-size: 2rem; min-height: 40px; }
+            .problem-metni { font-size: 0.85rem; padding: 5px; }
+            #unvan { font-size: 0.8rem; }
+            .skor-bilgi { font-size: 0.9rem; margin-bottom: 2px; }
         }
 
         .gizle { display: none !important; }
-        .skor-item { display: flex; justify-content: space-between; padding: 4px; border-bottom: 1px solid #ffdae0; font-size: 12px;}
+        .skor-item { display: flex; justify-content: space-between; padding: 3px; font-size: 11px; border-bottom: 1px solid #eee; }
     </style>
 </head>
 <body>
 
 <div id="oyun-kapsayici">
     <div id="giris-ekrani">
-        <h1 style="color: var(--koyu-pembe); margin: 5px 0; font-size: 24px;">Matematik Serüveni 🌸</h1>
+        <h1 style="color: var(--koyu-pembe); margin: 5px 0; font-size: 20px;">Matematik Serüveni 🌸</h1>
         <div class="ana-sayfa-layout">
             <div class="panel">
-                <h3>🎮 Oyun Seç</h3>
-                <button class="mod-butonu" style="background:white; border:3px solid var(--mor); color:var(--mor); padding:10px; margin:4px 0; width:100%; border-radius:12px; font-weight:bold; cursor:pointer;" onclick="oyunuBaslat('*')">✖️ Çarpma</button>
-                <button class="mod-butonu" style="background:white; border:3px solid var(--mor); color:var(--mor); padding:10px; margin:4px 0; width:100%; border-radius:12px; font-weight:bold; cursor:pointer;" onclick="oyunuBaslat('/')">➗ Bölme</button>
-                <button class="mod-butonu" style="background:white; border:3px solid var(--mor); color:var(--mor); padding:10px; margin:4px 0; width:100%; border-radius:12px; font-weight:bold; cursor:pointer;" onclick="oyunuBaslat('karisik')">✨ Karışık</button>
-                <button class="mod-butonu" style="background:white; border:3px solid var(--mavi); color:var(--mavi); padding:10px; margin:4px 0; width:100%; border-radius:12px; font-weight:bold; cursor:pointer;" onclick="oyunuBaslat('problem')">📖 Problemler</button>
+                <h3>🎮 Modlar</h3>
+                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--mor); background:white; font-weight:bold;" onclick="oyunuBaslat('*')">✖️ Çarpma</button>
+                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--mor); background:white; font-weight:bold;" onclick="oyunuBaslat('/')">➗ Bölme</button>
+                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--mor); background:white; font-weight:bold;" onclick="oyunuBaslat('karisik')">✨ Karışık</button>
+                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--mavi); background:white; font-weight:bold; color:var(--mavi);" onclick="oyunuBaslat('problem')">📖 Problemler</button>
             </div>
             <div class="panel">
                 <h3>🗺️ Seviyeler</h3>
@@ -120,24 +122,20 @@
 
     <div id="oyun-ekrani" class="gizle">
         <button id="bastan-basla-btn" onclick="başaDön()">🏠 Baştan Başla</button>
-        
-        <div id="unvan">Yeni Başlayan 🌱</div>
-
-        <div class="skor-bilgi" style="display: flex; justify-content: space-between; margin: 5px 0; font-size: 1.2rem; padding: 0 10px;">
-            <span style="color: var(--mor);">Puan: <span id="puan">0</span></span>
+        <div id="unvan">Tohum 🌱</div>
+        <div class="skor-bilgi">
+            <span>Puan: <span id="puan">0</span></span>
             <span id="canlar">❤️❤️</span>
         </div>
-
-        <div id="zaman-bar-kapsayici" style="width: 100%; margin-bottom: 8px; background:#eee; border-radius:10px; height: 10px;">
-            <div id="zaman-bar" style="width: 100%; height: 100%; background: var(--mavi); border-radius: 10px; transition: width 0.1s linear;"></div>
-        </div>
-
+        <div id="zaman-bar-kapsayici"><div id="zaman-bar"></div></div>
+        
         <div class="soru-alani" id="soru">?</div>
         
-        <input type="number" id="cevap" inputmode="decimal" pattern="[0-9]*" placeholder="?">
-        <br>
-        <button class="kontrol-btn" onclick="kontrolEt()">CEVAPLA! ✨</button>
-        <div id="mesaj" style="margin-top:8px; height: 20px; font-size: 1rem;"></div>
+        <div class="input-grubu">
+            <input type="number" id="cevap" inputmode="numeric" pattern="[0-9]*" placeholder="?">
+            <button class="kontrol-btn" onclick="kontrolEt()">TAMAM!</button>
+        </div>
+        <div id="mesaj" style="margin-top:5px; height: 15px; font-size: 0.9rem;"></div>
     </div>
 </div>
 
@@ -149,7 +147,6 @@
     ];
 
     let seciliMod, dogruCevap, puan = 0, can = 2, zamanlayici, kalanZaman, sureBittiMi = false;
-    const MAX_ZAMAN = 25;
 
     window.onload = () => { skorlariGoster(); seviyeHaritasiniCiz(); };
 
@@ -169,18 +166,16 @@
 
     function zamanBaslat() {
         clearInterval(zamanlayici);
-        kalanZaman = MAX_ZAMAN;
+        kalanZaman = 25;
         sureBittiMi = false;
         const bar = document.getElementById('zaman-bar');
-        bar.style.backgroundColor = "var(--mavi)";
         zamanlayici = setInterval(() => {
             kalanZaman -= 0.1;
-            bar.style.width = (kalanZaman / MAX_ZAMAN) * 100 + "%";
+            bar.style.width = (kalanZaman / 25) * 100 + "%";
             if (kalanZaman <= 0) {
                 clearInterval(zamanlayici);
                 sureBittiMi = true;
-                bar.style.backgroundColor = "#ff4d6d";
-                document.getElementById('mesaj').innerText = "Sabırla çözebilirsin ✨";
+                document.getElementById('mesaj').innerText = "Hadi yapabilirsin! ✨";
             }
         }, 100);
     }
@@ -200,8 +195,8 @@
         const se = document.getElementById('soru');
         if (seciliMod === 'problem') {
             const tipler = [
-                () => { let t = Math.floor(Math.random()*8)+3; return { s: `${t} tavşanın kaç ayağı olur?`, c: t*4 }; },
-                () => { let f = Math.floor(Math.random()*6)+2, a = Math.floor(Math.random()*5)+3; return { s: `${f} TL olan kalemden ${a} tane kaç TL?`, c: f*a }; }
+                () => { let t = Math.floor(Math.random()*8)+3; return { s: `${t} tavşanın kaç ayağı vardır?`, c: t*4 }; },
+                () => { let f = Math.floor(Math.random()*6)+2, a = Math.floor(Math.random()*5)+3; return { s: `${f} TL'lik kalemden ${a} tane kaç TL?`, c: f*a }; }
             ];
             let p = tipler[Math.floor(Math.random() * tipler.length)]();
             se.innerHTML = `<div class="problem-metni">${p.s}</div>`; dogruCevap = p.c;
@@ -211,7 +206,8 @@
             if(is === '*') { dogruCevap = s1*s2; se.innerText = `${s1} × ${s2}`; }
             else { s1 = s1*s2; dogruCevap = s2; se.innerText = `${s1} ÷ ${s1/s2}`; }
         }
-        document.getElementById('cevap').value = ''; document.getElementById('cevap').focus();
+        document.getElementById('cevap').value = ''; 
+        setTimeout(() => document.getElementById('cevap').focus(), 100);
         document.getElementById('mesaj').innerText = "";
         zamanBaslat();
     }
@@ -221,21 +217,18 @@
         if (isNaN(cev)) return;
         if (cev === dogruCevap) {
             clearInterval(zamanlayici);
-            puan += (!sureBittiMi) ? 10 : 5;
+            puan += 10;
             document.getElementById('puan').innerText = puan;
             document.getElementById('mesaj').innerText = "HARİKA! 🌈";
-            document.getElementById('mesaj').style.color = "#4CAF50";
-            confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } });
-            setTimeout(yeniSoru, 1200);
+            confetti({ particleCount: 50, spread: 50, origin: { y: 0.6 } });
+            setTimeout(yeniSoru, 1000);
         } else {
             can--; 
             document.getElementById('canlar').innerText = "❤️".repeat(can) || "❌";
-            document.getElementById('mesaj').innerText = "Tekrar dene! 💕";
-            document.getElementById('mesaj').style.color = "#ff4d6d";
             if (can <= 0) {
                 clearInterval(zamanlayici);
                 skorKaydet(puan);
-                setTimeout(() => { alert("Oyun bitti! Skor: " + puan); başaDön(); }, 500);
+                setTimeout(() => { alert("Skorun: " + puan); başaDön(); }, 300);
             }
         }
     }
