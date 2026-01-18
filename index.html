@@ -14,7 +14,7 @@
             font-family: 'Comic Sans MS', 'Verdana', sans-serif;
             background-color: var(--arkaplan);
             display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; margin: 0; padding: 10px;
+            min-height: 100vh; margin: 0; padding: 15px;
             font-weight: 700;
         }
 
@@ -22,117 +22,135 @@
             background: white; padding: 30px; border-radius: 40px;
             box-shadow: 0 15px 35px rgba(247, 37, 133, 0.3);
             text-align: center; border: 8px solid var(--pembe);
-            width: 850px; max-width: 98%;
+            width: 1000px; max-width: 98%; /* Ekranı biraz daha genişlettik */
+            position: relative;
         }
 
-        .giris-layout { display: flex; gap: 25px; flex-wrap: wrap; justify-content: center; }
-        .sol-panel, .sag-panel { flex: 1; min-width: 320px; }
-
-        .karakter-yolculugu {
-            background: #fdf0f4; border-radius: 20px; padding: 15px;
-            margin-bottom: 20px; border: 2px solid #ffdae0; text-align: left;
+        /* Üçlü Kolon Düzeni */
+        .ana-sayfa-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
         }
-        
+
+        .panel {
+            background: #fffafa;
+            border-radius: 25px;
+            padding: 20px;
+            border: 3px solid #ffdae0;
+        }
+
+        .panel h3 {
+            margin-top: 0;
+            color: var(--mor);
+            font-size: 20px;
+            border-bottom: 2px solid #ffdae0;
+            padding-bottom: 10px;
+        }
+
         /* Seviye Listesi Stil */
         .yolculuk-item { 
             display: flex; align-items: center; justify-content: space-between; 
-            font-size: 14px; margin: 5px 0; color: #333; 
-            padding: 3px 8px; border-radius: 10px;
+            font-size: 14px; margin: 6px 0; color: #333; 
+            padding: 5px 10px; border-radius: 12px;
+            background: white; border: 1px solid #eee;
         }
-        .yolculuk-item b { color: var(--koyu-pembe); width: 70px; }
-        .yolculuk-aktif { background: #ffe4e9; border: 1px solid var(--pembe); }
-
-        #zaman-bar-kapsayici {
-            width: 100%; height: 16px; background: #eee;
-            border-radius: 8px; margin: 20px 0; overflow: hidden; display: none;
-            border: 2px solid #ddd;
-        }
-        #zaman-bar { width: 100%; height: 100%; background: var(--mavi); transition: width 0.1s linear; }
-
-        .unvan-etiketi {
-            background: var(--mor); color: white;
-            padding: 10px 25px; border-radius: 25px;
-            font-size: 22px; display: inline-block; margin-bottom: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
+        .yolculuk-item b { color: var(--koyu-pembe); min-width: 45px; text-align: left; }
 
         .mod-butonu {
             background: white; border: 4px solid var(--mor); color: var(--mor);
-            padding: 18px; margin: 10px 0; border-radius: 20px;
-            cursor: pointer; font-weight: 900; font-size: 20px;
+            padding: 15px; margin: 10px 0; border-radius: 20px;
+            cursor: pointer; font-weight: 900; font-size: 18px;
             transition: 0.3s; width: 100%; display: block;
         }
-        .mod-butonu:hover { background: var(--mor); color: white; transform: scale(1.02); }
+        .mod-butonu:hover { background: var(--mor); color: white; transform: scale(1.03); }
+
+        /* Oyun Ekranı */
+        #bastan-basla-btn {
+            position: absolute; top: 20px; right: 20px;
+            background: #eee; border: none; padding: 10px 15px;
+            border-radius: 15px; cursor: pointer; font-weight: bold;
+            font-family: inherit; transition: 0.3s;
+        }
+        #bastan-basla-btn:hover { background: #ffdae0; color: var(--koyu-pembe); }
 
         .soru-alani {
-            font-size: 60px; color: var(--koyu-pembe);
-            margin: 20px 0; min-height: 160px;
+            font-size: 65px; color: var(--koyu-pembe);
+            margin: 15px 0; min-height: 150px;
             display: flex; align-items: center; justify-content: center;
         }
 
         .problem-metni {
-            font-size: 24px; line-height: 1.6; color: #222; font-weight: 800;
+            font-size: 24px; line-height: 1.5; color: #222; font-weight: 800;
             padding: 25px; background: #fff8f9; border-radius: 30px; border: 3px solid #ffdae0;
         }
 
         input {
-            font-size: 40px; width: 180px; padding: 15px;
+            font-size: 45px; width: 200px; padding: 15px;
             border: 5px solid var(--mavi); border-radius: 25px;
-            text-align: center; outline: none; font-weight: 900;
-            color: var(--mor);
+            text-align: center; outline: none; font-weight: 900; color: var(--mor);
         }
 
         .kontrol-btn {
             background: linear-gradient(45deg, var(--koyu-pembe), var(--pembe));
-            color: white; border: none; padding: 20px 45px;
+            color: white; border: none; padding: 20px;
             font-size: 28px; border-radius: 35px; cursor: pointer;
             margin-top: 25px; width: 100%; font-weight: 900;
             box-shadow: 0 6px 0px #c01b65;
         }
-        .kontrol-btn:active { transform: translateY(4px); box-shadow: 0 2px 0px #c01b65; }
 
-        .skor-tablosu {
-            background: #fffafa; border-radius: 20px; padding: 20px; border: 3px dashed var(--pembe);
-        }
-        .skor-tablosu h3 { font-size: 22px; margin-top: 0; color: var(--mor); }
-
-        .skor-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 2px solid #ffdae0; font-size: 18px;}
+        .skor-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 2px solid #ffdae0; font-size: 16px;}
         .gizle { display: none !important; }
+        
+        /* Mobil Uyumluluk için Grid Ayarı */
+        @media (max-width: 900px) {
+            .ana-sayfa-layout { grid-template-columns: 1fr; }
+            #oyun-kapsayici { width: 95%; }
+        }
     </style>
 </head>
 <body>
 
 <div id="oyun-kapsayici">
     <div id="giris-ekrani">
-        <h1 style="color: var(--koyu-pembe);">Matematik Serüveni 🌸</h1>
-        <div class="giris-layout">
-            <div class="sol-panel">
-                <button class="mod-butonu" onclick="oyunuBaslat('*')">✖️ Çarpma İşlemi</button>
-                <button class="mod-butonu" onclick="oyunuBaslat('/')">➗ Bölme İşlemi</button>
-                <button class="mod-butonu" onclick="oyunuBaslat('karisik')">✨ Karışık Macera</button>
-                <button class="mod-butonu" style="border-color: #4cc9f0; color: #2fb4df;" onclick="oyunuBaslat('problem')">📖 Sihirli Problemler</button>
+        <h1 style="color: var(--koyu-pembe); font-size: 40px; margin-bottom: 10px;">Matematik Serüveni 🌸</h1>
+        
+        <div class="ana-sayfa-layout">
+            <div class="panel">
+                <h3>🎮 Oyun Seç</h3>
+                <button class="mod-butonu" onclick="oyunuBaslat('*')">✖️ Çarpma</button>
+                <button class="mod-butonu" onclick="oyunuBaslat('/')">➗ Bölme</button>
+                <button class="mod-butonu" onclick="oyunuBaslat('karisik')">✨ Karışık</button>
+                <button class="mod-butonu" style="border-color: #4cc9f0; color: #2fb4df;" onclick="oyunuBaslat('problem')">📖 Problemler</button>
             </div>
-            <div class="sag-panel">
-                <div class="karakter-yolculugu">
-                    <h4 style="margin: 0 0 10px 0; color: var(--mor); text-align: center; font-size: 18px;">Yolculuk Haritası ✨</h4>
-                    <div id="seviye-listesi">
-                        </div>
-                </div>
-                <div class="skor-tablosu">
-                    <h3>🏆 En İyi Skorlar</h3>
-                    <div id="liderlik-listesi"></div>
-                </div>
+
+            <div class="panel">
+                <h3>🗺️ Yol Haritası</h3>
+                <div id="seviye-listesi"></div>
+            </div>
+
+            <div class="panel">
+                <h3>🏆 En İyiler</h3>
+                <div id="liderlik-listesi"></div>
             </div>
         </div>
     </div>
 
     <div id="oyun-ekrani" class="gizle">
-        <div id="unvan" class="unvan-etiketi">Yeni Başlayan 🌱</div>
-        <div style="display: flex; justify-content: space-between; margin: 15px 0; font-size: 24px;">
+        <button id="bastan-basla-btn" onclick="başaDön()">🏠 Baştan Başla</button>
+        
+        <div id="unvan" style="background: var(--mor); color: white; padding: 10px 30px; border-radius: 25px; font-size: 22px; display: inline-block; margin-top: 20px;">
+            Yeni Başlayan 🌱
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin: 25px 0; font-size: 26px; padding: 0 20px;">
             <span style="color: var(--mor);">Puan: <span id="puan">0</span></span>
             <span id="canlar">❤️❤️</span>
         </div>
-        <div id="zaman-bar-kapsayici"><div id="zaman-bar"></div></div>
+
+        <div id="zaman-bar-kapsayici" style="width: 90%; margin: 10px auto;"><div id="zaman-bar" style="width: 100%; height: 16px; background: var(--mavi); border-radius: 8px;"></div></div>
+
         <div class="soru-alani" id="soru">?</div>
         <input type="number" id="cevap" inputmode="numeric" placeholder="?">
         <br>
@@ -143,14 +161,14 @@
 
 <script>
     const SEVIYELER = [
-        { min: 0, ad: "Yumurcak Tohum 🌱" },
-        { min: 30, ad: "Meraklı Filiz 🌿" },
-        { min: 70, ad: "Renkli Çiçek 🌸" },
-        { min: 120, ad: "Uçan Kelebek 🦋" },
-        { min: 180, ad: "Bilge Baykuş 🦉" },
-        { min: 250, ad: "Yıldız Gezgini 🌠" },
-        { min: 350, ad: "Süper Kahraman 🦸‍♀️" },
-        { min: 500, ad: "Matematik Kraliçesi 👑" }
+        { min: 0, ad: "Tohum 🌱" },
+        { min: 30, ad: "Filiz 🌿" },
+        { min: 70, ad: "Çiçek 🌸" },
+        { min: 120, ad: "Kelebek 🦋" },
+        { min: 180, ad: "Baykuş 🦉" },
+        { min: 250, ad: "Yıldız 🌠" },
+        { min: 350, ad: "Kahraman 🦸‍♀️" },
+        { min: 500, ad: "Kraliçe 👑" }
     ];
 
     let seciliMod, dogruCevap, puan = 0, can = 2, audioCtx, zamanlayici, kalanZaman, sureBittiMi = false;
@@ -184,10 +202,7 @@
     function unvanGuncelle() {
         let u = SEVIYELER[0].ad;
         for (let i = SEVIYELER.length - 1; i >= 0; i--) {
-            if (puan >= SEVIYELER[i].min) {
-                u = SEVIYELER[i].ad;
-                break;
-            }
+            if (puan >= SEVIYELER[i].min) { u = SEVIYELER[i].ad; break; }
         }
         document.getElementById('unvan').innerText = u;
     }
@@ -198,15 +213,12 @@
         sureBittiMi = false;
         const bar = document.getElementById('zaman-bar');
         bar.style.backgroundColor = "var(--mavi)";
-        document.getElementById('zaman-bar-kapsayici').style.display = 'block';
-        
         zamanlayici = setInterval(() => {
             kalanZaman -= 0.1;
             bar.style.width = (kalanZaman / MAX_ZAMAN) * 100 + "%";
             if (kalanZaman <= 0) {
                 clearInterval(zamanlayici);
                 sureBittiMi = true;
-                bar.style.width = "0%";
                 bar.style.backgroundColor = "#ff4d6d";
                 document.getElementById('mesaj').innerText = "Dikkatlice çözebilirsin ✨";
             }
@@ -271,9 +283,16 @@
             if (can <= 0) {
                 clearInterval(zamanlayici);
                 skorKaydet(puan);
-                setTimeout(() => { alert("Oyun bitti! Skorun: " + puan); location.reload(); }, 500);
+                setTimeout(() => { alert("Oyun bitti! Skorun: " + puan); başaDön(); }, 500);
             }
         }
+    }
+
+    function başaDön() {
+        clearInterval(zamanlayici);
+        document.getElementById('oyun-ekrani').classList.add('gizle');
+        document.getElementById('giris-ekrani').classList.remove('gizle');
+        skorlariGoster();
     }
 
     function skorKaydet(p) {
