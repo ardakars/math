@@ -15,14 +15,14 @@
             background-color: var(--arkaplan);
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh; margin: 0; padding: 10px;
-            font-weight: 700; /* Yazıları kalınlaştırdık */
+            font-weight: 700;
         }
 
         #oyun-kapsayici {
             background: white; padding: 30px; border-radius: 40px;
             box-shadow: 0 15px 35px rgba(247, 37, 133, 0.3);
             text-align: center; border: 8px solid var(--pembe);
-            width: 800px; max-width: 98%;
+            width: 850px; max-width: 98%;
         }
 
         .giris-layout { display: flex; gap: 25px; flex-wrap: wrap; justify-content: center; }
@@ -33,8 +33,14 @@
             margin-bottom: 20px; border: 2px solid #ffdae0; text-align: left;
         }
         
-        .yolculuk-item { display: flex; align-items: center; justify-content: space-between; font-size: 16px; margin: 8px 0; color: #333; }
-        .yolculuk-item b { color: var(--koyu-pembe); font-size: 18px; }
+        /* Seviye Listesi Stil */
+        .yolculuk-item { 
+            display: flex; align-items: center; justify-content: space-between; 
+            font-size: 14px; margin: 5px 0; color: #333; 
+            padding: 3px 8px; border-radius: 10px;
+        }
+        .yolculuk-item b { color: var(--koyu-pembe); width: 70px; }
+        .yolculuk-aktif { background: #ffe4e9; border: 1px solid var(--pembe); }
 
         #zaman-bar-kapsayici {
             width: 100%; height: 16px; background: #eee;
@@ -46,7 +52,7 @@
         .unvan-etiketi {
             background: var(--mor); color: white;
             padding: 10px 25px; border-radius: 25px;
-            font-size: 20px; display: inline-block; margin-bottom: 15px;
+            font-size: 22px; display: inline-block; margin-bottom: 15px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
@@ -62,7 +68,6 @@
             font-size: 60px; color: var(--koyu-pembe);
             margin: 20px 0; min-height: 160px;
             display: flex; align-items: center; justify-content: center;
-            text-shadow: 1px 1px 0px #fff, 2px 2px 0px rgba(0,0,0,0.1);
         }
 
         .problem-metni {
@@ -93,8 +98,6 @@
 
         .skor-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 2px solid #ffdae0; font-size: 18px;}
         .gizle { display: none !important; }
-        
-        h1 { font-size: 36px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -111,11 +114,9 @@
             </div>
             <div class="sag-panel">
                 <div class="karakter-yolculugu">
-                    <h4 style="margin: 0 0 10px 0; color: var(--mor); text-align: center; font-size: 18px;">Karakter Seviyeleri ✨</h4>
-                    <div class="yolculuk-item"><b>0+</b> <span>🌱 Tohum</span></div>
-                    <div class="yolculuk-item"><b>50+</b> <span>🌸 Çiçek</span></div>
-                    <div class="yolculuk-item"><b>150+</b> <span>🦋 Kelebek</span></div>
-                    <div class="yolculuk-item"><b>300+</b> <span>👑 Kraliçe</span></div>
+                    <h4 style="margin: 0 0 10px 0; color: var(--mor); text-align: center; font-size: 18px;">Yolculuk Haritası ✨</h4>
+                    <div id="seviye-listesi">
+                        </div>
                 </div>
                 <div class="skor-tablosu">
                     <h3>🏆 En İyi Skorlar</h3>
@@ -141,10 +142,31 @@
 </div>
 
 <script>
+    const SEVIYELER = [
+        { min: 0, ad: "Yumurcak Tohum 🌱" },
+        { min: 30, ad: "Meraklı Filiz 🌿" },
+        { min: 70, ad: "Renkli Çiçek 🌸" },
+        { min: 120, ad: "Uçan Kelebek 🦋" },
+        { min: 180, ad: "Bilge Baykuş 🦉" },
+        { min: 250, ad: "Yıldız Gezgini 🌠" },
+        { min: 350, ad: "Süper Kahraman 🦸‍♀️" },
+        { min: 500, ad: "Matematik Kraliçesi 👑" }
+    ];
+
     let seciliMod, dogruCevap, puan = 0, can = 2, audioCtx, zamanlayici, kalanZaman, sureBittiMi = false;
     const MAX_ZAMAN = 25;
 
-    window.onload = skorlariGoster;
+    window.onload = () => {
+        skorlariGoster();
+        seviyeHaritasiniCiz();
+    };
+
+    function seviyeHaritasiniCiz() {
+        const liste = document.getElementById('seviye-listesi');
+        liste.innerHTML = SEVIYELER.map(s => `
+            <div class="yolculuk-item"><b>${s.min}+</b> <span>${s.ad}</span></div>
+        `).join('');
+    }
 
     function sesHazirla() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
     
@@ -160,10 +182,13 @@
     }
 
     function unvanGuncelle() {
-        let u = "Yeni Başlayan 🌱";
-        if (puan >= 300) u = "Matematik Kraliçesi 👑";
-        else if (puan >= 150) u = "Süper Kelebek 🦋";
-        else if (puan >= 50) u = "Çalışkan Çiçek 🌸";
+        let u = SEVIYELER[0].ad;
+        for (let i = SEVIYELER.length - 1; i >= 0; i--) {
+            if (puan >= SEVIYELER[i].min) {
+                u = SEVIYELER[i].ad;
+                break;
+            }
+        }
         document.getElementById('unvan').innerText = u;
     }
 
@@ -183,8 +208,7 @@
                 sureBittiMi = true;
                 bar.style.width = "0%";
                 bar.style.backgroundColor = "#ff4d6d";
-                document.getElementById('mesaj').innerText = "Sabırla çözebilirsin ✨";
-                document.getElementById('mesaj').style.color = "#666";
+                document.getElementById('mesaj').innerText = "Dikkatlice çözebilirsin ✨";
             }
         }, 100);
     }
@@ -193,8 +217,7 @@
         const tipler = [
             () => { let t = Math.floor(Math.random()*12)+4; return { s: `Bir bahçede ${t} tavşan var. Toplam kaç ayakları olur?`, c: t*4 }; },
             () => { let f = Math.floor(Math.random()*8)+2, a = Math.floor(Math.random()*7)+4; return { s: `Tanesi ${f} TL olan kalemlerden ${a} tane alırsak kaç TL öderiz?`, c: f*a }; },
-            () => { let k = Math.floor(Math.random()*5)+3, y = [6, 10, 12][Math.floor(Math.random()*3)]; return { s: `Her birinde ${y} yumurta olan ${k} koli toplam kaç yumurta eder?`, c: k*y }; },
-            () => { let s = Math.floor(Math.random()*20)+10, b = [2,3][Math.floor(Math.random()*2)]; s = Math.floor(s/b)*b; return { s: `${s} çikolatayı ${b} arkadaş paylaşırsak her birimize kaç tane düşer?`, c: s/b }; }
+            () => { let k = Math.floor(Math.random()*5)+3, y = [6, 10, 12][Math.floor(Math.random()*3)]; return { s: `Her birinde ${y} yumurta olan ${k} koli toplam kaç yumurta eder?`, c: k*y }; }
         ];
         return tipler[Math.floor(Math.random() * tipler.length)]();
     }
@@ -242,7 +265,7 @@
         } else {
             can--; 
             document.getElementById('canlar').innerText = "❤️".repeat(can) || "❌";
-            document.getElementById('mesaj').innerText = "Tekrar dene, yapabilirsin! 💕";
+            document.getElementById('mesaj').innerText = "Bir kez daha dene! 💕";
             document.getElementById('mesaj').style.color = "#ff4d6d";
             sesCal(110, 'triangle', 0.3);
             if (can <= 0) {
