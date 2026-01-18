@@ -3,82 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Matematik Serüveni ✨👑</title>
+    <title>Matematik Serüveni V7 ✨</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
-        :root {
-            --pembe: #ff85a2; --koyu-pembe: #f72585; --mor: #7209b7; --mavi: #4cc9f0; --arkaplan: #fff0f3;
+        :root { --pembe: #ff85a2; --koyu-pembe: #f72585; --mor: #7209b7; --mavi: #4cc9f0; --arkaplan: #fff0f3; --turuncu: #fb8500; }
+        body { font-family: 'Comic Sans MS', cursive; background: var(--arkaplan); display: flex; justify-content: center; align-items: flex-start; height: 100vh; margin: 0; padding: 0; font-weight: 700; overflow: hidden; }
+        
+        #oyun-kapsayici { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(247,37,133,0.2); text-align: center; border: 4px solid var(--pembe); width: 1000px; max-width: 98%; margin-top: 5px; position: relative; padding: 10px; display: flex; flex-direction: column; transition: transform 0.1s; }
+
+        /* SEVİYE ATLAMA EFEKTİ */
+        @keyframes seviye-parla {
+            0% { transform: scale(1); background: var(--mor); }
+            50% { transform: scale(1.3); background: var(--koyu-pembe); box-shadow: 0 0 20px var(--koyu-pembe); }
+            100% { transform: scale(1); background: var(--mor); }
+        }
+        .seviye-atlama-anim { animation: seviye-parla 1s ease-in-out; }
+        .salla { animation: salla-anim 0.5s; }
+        @keyframes salla-anim {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            50% { transform: translate(-1px, 2px) rotate(1deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
         }
 
-        body {
-            font-family: 'Comic Sans MS', 'Verdana', sans-serif;
-            background-color: var(--arkaplan);
-            display: flex; justify-content: center; align-items: flex-start;
-            height: 100vh; margin: 0; padding: 0;
-            font-weight: 700; overflow: hidden;
-        }
-
-        #oyun-kapsayici {
-            background: white; border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(247, 37, 133, 0.2);
-            text-align: center; border: 4px solid var(--pembe);
-            width: 1000px; max-width: 98%;
-            margin-top: 5px; position: relative;
-            padding: 10px; display: flex; flex-direction: column;
-        }
-
-        /* GİRİŞ EKRANI */
         .ana-sayfa-layout { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 10px; margin-top: 5px; }
         .panel { background: #fffafa; border-radius: 15px; padding: 8px; border: 1px solid #ffdae0; }
         .panel h3 { margin: 0 0 5px 0; font-size: 1rem; color: var(--mor); }
         .yolculuk-item { display: flex; justify-content: space-between; font-size: 11px; margin: 2px 0; padding: 3px; background: white; border-radius: 5px; }
 
-        /* OYUN EKRANI */
-        #bastan-basla-btn {
-            position: absolute; top: 5px; right: 5px;
-            background: #eee; border: 1px solid #ccc; padding: 5px 10px;
-            border-radius: 10px; cursor: pointer; font-size: 11px; z-index: 20;
-        }
-
-        #unvan {
-            background: var(--mor); color: white; padding: 3px 12px;
-            border-radius: 10px; font-size: 0.9rem; margin-bottom: 5px; display: inline-block;
-        }
-
+        #bastan-basla-btn { position: absolute; top: 5px; right: 5px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 10px; cursor: pointer; font-size: 11px; z-index: 20; }
+        #unvan { background: var(--mor); color: white; padding: 3px 12px; border-radius: 10px; font-size: 0.9rem; margin-bottom: 5px; display: inline-block; transition: all 0.3s; }
+        
         .skor-bilgi { font-size: 1.1rem; color: var(--mor); margin-bottom: 5px; width: 90%; display: flex; justify-content: space-around; margin: 0 auto; }
-
         #zaman-bar-kapsayici { width: 90%; height: 8px; background: #eee; border-radius: 5px; margin: 0 auto 10px auto; }
         #zaman-bar { height: 100%; background: var(--mavi); border-radius: 5px; width: 100%; }
-
-        .soru-alani {
-            font-size: 3rem; color: var(--koyu-pembe);
-            margin: 5px 0; min-height: 50px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .problem-metni { font-size: 0.95rem; line-height: 1.2; padding: 10px; background: #fff8f9; border-radius: 12px; border: 1px solid #ffdae0; max-width: 90%; }
-
-        /* INPUT GRUBU */
-        .input-grubu { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 5px; }
-        input { font-size: 2rem; width: 100px; padding: 5px; border: 3px solid var(--mavi); border-radius: 12px; text-align: center; outline: none; }
-        .kontrol-btn { background: var(--koyu-pembe); color: white; border: none; padding: 10px 25px; font-size: 1.2rem; border-radius: 15px; cursor: pointer; font-weight: 900; box-shadow: 0 3px 0px #c01b65; }
-
-        /* SKOR ETİKETLERİ VE DETAYLAR */
-        .skor-item { display: flex; flex-direction: column; padding: 6px; border-bottom: 1px solid #eee; text-align: left; }
-        .skor-ust { display: flex; justify-content: space-between; align-items: center; }
-        .skor-alt { display: flex; justify-content: space-between; font-size: 9px; color: #777; margin-top: 3px; }
         
-        .mod-etiket { font-size: 9px; padding: 2px 5px; border-radius: 4px; color: white; text-transform: uppercase; }
-        .etiket-carpma { background: #ff85a2; }
-        .etiket-bolme { background: #4cc9f0; }
-        .etiket-karisik { background: #7209b7; }
-        .etiket-problem { background: #fb8500; }
+        .soru-alani { font-size: 2.2rem; color: var(--koyu-pembe); margin: 5px 0; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+        .problem-metni { font-size: 1.1rem; line-height: 1.2; padding: 10px; background: #fff8f9; border-radius: 12px; border: 1px solid #ffdae0; max-width: 90%; }
 
-        @media (max-height: 500px) {
-            h1 { display: none; }
-            .soru-alani { font-size: 2.2rem; min-height: 40px; }
-            .input-grubu { margin-top: 2px; }
-        }
+        .input-grubu { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 5px; }
+        input { font-size: 2.5rem; width: 140px; padding: 5px; border: 3px solid var(--mavi); border-radius: 12px; text-align: center; outline: none; }
+        .kontrol-btn { background: var(--koyu-pembe); color: white; border: none; padding: 15px 35px; font-size: 1.2rem; border-radius: 15px; cursor: pointer; font-weight: 900; }
+        
+        .sik-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 90%; margin: 5px auto; }
+        .sik-btn { background: white; border: 3px solid var(--mavi); border-radius: 15px; padding: 12px; font-size: 1.3rem; font-weight: bold; cursor: pointer; color: var(--mor); }
+        .sik-btn:active { background: var(--mavi); color: white; }
+
+        .skor-item { display: flex; flex-direction: column; padding: 6px; border-bottom: 1px solid #eee; text-align: left; }
+        .mod-etiket { font-size: 9px; padding: 2px 5px; border-radius: 4px; color: white; text-transform: uppercase; }
 
         .gizle { display: none !important; }
     </style>
@@ -87,14 +60,14 @@
 
 <div id="oyun-kapsayici">
     <div id="giris-ekrani">
-        <h1 style="color: var(--koyu-pembe); margin: 5px 0; font-size: 20px;">Matematik Serüveni 🌸</h1>
+        <h1 style="color: var(--koyu-pembe); margin: 5px 0; font-size: 20px;">Matematik Serüveni ✨</h1>
         <div class="ana-sayfa-layout">
             <div class="panel">
                 <h3>🎮 Modlar</h3>
-                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--mor); background:white; font-weight:bold; cursor:pointer;" onclick="oyunuBaslat('*', 'Çarpma')">✖️ Çarpma</button>
-                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--mor); background:white; font-weight:bold; cursor:pointer;" onclick="oyunuBaslat('/', 'Bölme')">➗ Bölme</button>
-                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--mor); background:white; font-weight:bold; cursor:pointer;" onclick="oyunuBaslat('karisik', 'Karışık')">✨ Karışık</button>
-                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid #fb8500; background:white; font-weight:bold; color:#fb8500; cursor:pointer;" onclick="oyunuBaslat('problem', 'Problem')">📖 Problemler</button>
+                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--mor); background:white; font-weight:bold; cursor:pointer;" onclick="oyunBaslat('*', 'Çarpma')">✖️ Çarpma</button>
+                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--mor); background:white; font-weight:bold; cursor:pointer;" onclick="oyunBaslat('/', 'Bölme')">➗ Bölme</button>
+                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--mavi); background:white; font-weight:bold; color:var(--mavi); cursor:pointer;" onclick="oyunBaslat('yuvarla', 'Yuvarlama')">🔢 Yuvarlama</button>
+                <button style="width:100%; padding:8px; margin:3px 0; border-radius:10px; border:2px solid var(--turuncu); background:white; font-weight:bold; color:var(--turuncu); cursor:pointer;" onclick="oyunBaslat('dizi', 'Sayı Dizisi')">⚖️ Sayı Dizisi</button>
             </div>
             <div class="panel">
                 <h3>🗺️ Seviyeler</h3>
@@ -108,64 +81,103 @@
     </div>
 
     <div id="oyun-ekrani" class="gizle">
-        <button id="bastan-basla-btn" onclick="başaDön()">🏠 Baştan Başla</button>
+        <button id="bastan-basla-btn" onclick="başaDön()">🏠 Kapat</button>
         <div id="unvan">Tohum 🌱</div>
         <div class="skor-bilgi">
             <span>Puan: <span id="puan">0</span></span>
             <span id="canlar">❤️❤️</span>
         </div>
         <div id="zaman-bar-kapsayici"><div id="zaman-bar"></div></div>
+        
         <div class="soru-alani" id="soru">?</div>
-        <div class="input-grubu">
+
+        <div id="cevap-input-alani" class="input-grubu">
             <input type="number" id="cevap" inputmode="numeric" pattern="[0-9]*" placeholder="?">
             <button class="kontrol-btn" onclick="kontrolEt()">TAMAM!</button>
         </div>
+
+        <div id="cevap-sik-alani" class="sik-grid gizle"></div>
         <div id="mesaj" style="margin-top:5px; height: 15px; font-size: 0.9rem;"></div>
     </div>
 </div>
 
 <script>
-    const SEVIYELER = [
-        { min: 0, ad: "Tohum 🌱" }, { min: 30, ad: "Filiz 🌿" }, { min: 70, ad: "Çiçek 🌸" },
-        { min: 120, ad: "Kelebek 🦋" }, { min: 180, ad: "Baykuş 🦉" }, { min: 250, ad: "Yıldız 🌠" },
-        { min: 350, ad: "Kahraman 🦸‍♀️" }, { min: 500, ad: "Kraliçe 👑" }
-    ];
+    const SEVIYELER = [{min:0,ad:"Tohum 🌱"},{min:30,ad:"Filiz 🌿"},{min:70,ad:"Çiçek 🌸"},{min:120,ad:"Kelebek 🦋"},{min:180,ad:"Baykuş 🦉"},{min:250,ad:"Yıldız 🌠"},{min:350,ad:"Kahraman 🦸‍♀️"},{min:500,ad:"Kraliçe 👑"}];
+    let seciliMod, modAdi, dogruCevap, puan=0, can=2, zamanlayici, kalanZaman, baslangicZamani, mevcutUnvanIdx = 0;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    let seciliMod, modAdi, dogruCevap, puan = 0, can = 2, zamanlayici, kalanZaman;
-    let baslangicZamani;
+    window.onload = () => { skorlariGoster(); seviyeListesiCiz(); };
 
-    window.onload = () => { skorlariGoster(); seviyeHaritasiniCiz(); };
+    function sesCal(type) {
+        const osc = audioCtx.createOscillator(); const g = audioCtx.createGain();
+        osc.connect(g); g.connect(audioCtx.destination);
+        if(type === 'dogru') {
+            osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+            g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.2);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+        } else if(type === 'hata') {
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+        } else if(type === 'seviye') {
+            // COŞKULU MELODİ: Do-Mi-Sol-Do (Yüksek)
+            const notalar = [523.25, 659.25, 783.99, 1046.50]; 
+            notalar.forEach((n, i) => {
+                const o = audioCtx.createOscillator(); const gn = audioCtx.createGain();
+                o.connect(gn); gn.connect(audioCtx.destination);
+                o.type = 'triangle';
+                o.frequency.setValueAtTime(n, audioCtx.currentTime + (i * 0.12));
+                gn.gain.setValueAtTime(0.1, audioCtx.currentTime + (i * 0.12));
+                gn.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (i * 0.12) + 0.4);
+                o.start(audioCtx.currentTime + (i * 0.12)); o.stop(audioCtx.currentTime + (i * 0.12) + 0.4);
+            });
+        }
+    }
 
-    function seviyeHaritasiniCiz() {
-        document.getElementById('seviye-listesi').innerHTML = SEVIYELER.map(s => `
-            <div class="yolculuk-item"><b>${s.min}+</b> <span>${s.ad}</span></div>
-        `).join('');
+    function seviyeListesiCiz() {
+        document.getElementById('seviye-listesi').innerHTML = SEVIYELER.map(s => `<div class="yolculuk-item"><b>${s.min}+</b> <span>${s.ad}</span></div>`).join('');
     }
 
     function unvanGuncelle() {
-        let u = SEVIYELER[0].ad;
+        let yeniIdx = 0;
         for (let i = SEVIYELER.length - 1; i >= 0; i--) {
-            if (puan >= SEVIYELER[i].min) { u = SEVIYELER[i].ad; break; }
+            if (puan >= SEVIYELER[i].min) { yeniIdx = i; break; }
         }
-        document.getElementById('unvan').innerText = u;
+        
+        if (yeniIdx > mevcutUnvanIdx) {
+            mevcutUnvanIdx = yeniIdx;
+            
+            // COŞKULU EFEKTLER
+            sesCal('seviye');
+            const kapsayici = document.getElementById('oyun-kapsayici');
+            const unvanTag = document.getElementById('unvan');
+            
+            // Ekran sallama
+            kapsayici.classList.add('salla');
+            setTimeout(() => kapsayici.classList.remove('salla'), 500);
+            
+            // Unvan parlama
+            unvanTag.classList.add('seviye-atlama-anim');
+            setTimeout(() => unvanTag.classList.remove('seviye-atlama-anim'), 1000);
+
+            // Çift taraflı konfeti patlaması
+            var end = Date.now() + (2 * 1000);
+            var colors = ['#f72585', '#7209b7', '#4cc9f0', '#ffb703'];
+
+            (function frame() {
+              confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: colors });
+              confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: colors });
+              if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
+        }
+        document.getElementById('unvan').innerText = SEVIYELER[mevcutUnvanIdx].ad;
     }
 
-    function zamanBaslat() {
-        clearInterval(zamanlayici);
-        kalanZaman = 25;
-        const bar = document.getElementById('zaman-bar');
-        zamanlayici = setInterval(() => {
-            kalanZaman -= 0.1;
-            bar.style.width = (kalanZaman / 25) * 100 + "%";
-            if (kalanZaman <= 0) { clearInterval(zamanlayici); document.getElementById('mesaj').innerText = "Hadi başarabilirsin! ✨"; }
-        }, 100);
-    }
-
-    function oyunuBaslat(mod, ad) {
-        seciliMod = mod; modAdi = ad; puan = 0; can = 2;
-        baslangicZamani = Date.now(); // Kronometre başlat
-        document.getElementById('puan').innerText = "0";
-        document.getElementById('canlar').innerText = "❤️❤️";
+    function oyunBaslat(m, ad) {
+        seciliMod = m; modAdi = ad; puan = 0; can = 2; baslangicZamani = Date.now(); mevcutUnvanIdx = 0;
         document.getElementById('giris-ekrani').classList.add('gizle');
         document.getElementById('oyun-ekrani').classList.remove('gizle');
         yeniSoru();
@@ -175,46 +187,90 @@
         if(can <= 0) return;
         unvanGuncelle();
         const se = document.getElementById('soru');
-        if (seciliMod === 'problem') {
-            const tipler = [
-                () => { let t = Math.floor(Math.random()*8)+3; return { s: `${t} tavşanın kaç ayağı olur?`, c: t*4 }; },
-                () => { let f = Math.floor(Math.random()*6)+2, a = Math.floor(Math.random()*5)+3; return { s: `${f} TL olan kalemden ${a} tane kaç TL?`, c: f*a }; }
-            ];
-            let p = tipler[Math.floor(Math.random() * tipler.length)]();
-            se.innerHTML = `<div class="problem-metni">${p.s}</div>`; dogruCevap = p.c;
-        } else {
-            let is = seciliMod === 'karisik' ? (Math.random() > 0.5 ? '*' : '/') : seciliMod;
-            let s1 = Math.floor(Math.random()*9)+2, s2 = Math.floor(Math.random()*9)+2;
-            if(is === '*') { dogruCevap = s1*s2; se.innerText = `${s1} × ${s2}`; }
-            else { s1 = s1*s2; dogruCevap = s2; se.innerText = `${s1} ÷ ${s1/s2}`; }
+        const inpAlani = document.getElementById('cevap-input-alani');
+        const sikAlani = document.getElementById('cevap-sik-alani');
+        
+        inpAlani.classList.add('gizle');
+        sikAlani.classList.add('gizle');
+        document.getElementById('cevap').value = '';
+
+        if (seciliMod === 'yuvarla') {
+            inpAlani.classList.remove('gizle');
+            let sayi = Math.floor(Math.random()*900)+100;
+            let tip = Math.random() > 0.5 ? 10 : 100;
+            se.innerHTML = `<div class="problem-metni">${sayi} → en yakın ${tip === 10 ? 'onluğa' : 'yüzlüğe'} yuvarla?</div>`;
+            dogruCevap = Math.round(sayi / tip) * tip;
+        } 
+        else if (seciliMod === 'dizi') {
+            sikAlani.classList.remove('gizle');
+            let dizi = [Math.floor(Math.random()*20)+1, Math.floor(Math.random()*100)+50, Math.floor(Math.random()*1000)+500, Math.floor(Math.random()*5000)+2000, 0, Math.floor(Math.random()*50000)+20000];
+            dogruCevap = Math.floor(Math.random()*15000)+6000;
+            dizi[4] = dogruCevap;
+            dizi.sort((a,b) => a - b);
+            let soruDizi = [...dizi];
+            let boslukIdx = soruDizi.indexOf(dogruCevap);
+            soruDizi[boslukIdx] = "???";
+            se.innerHTML = `<div class="problem-metni" style="font-size:1rem">${soruDizi.join(' - ')}</div>`;
+            let siklar = [dogruCevap, dogruCevap+100, dogruCevap-150, Math.floor(Math.random()*50000)];
+            siklar.sort(() => Math.random() - 0.5);
+            sikAlani.innerHTML = siklar.map(s => `<button class="sik-btn" onclick="sikKontrol(${s})">${s}</button>`).join('');
         }
-        document.getElementById('cevap').value = ''; 
-        setTimeout(() => document.getElementById('cevap').focus(), 150);
-        document.getElementById('mesaj').innerText = "";
+        else {
+            inpAlani.classList.remove('gizle');
+            let s1 = Math.floor(Math.random()*9)+2, s2 = Math.floor(Math.random()*9)+2;
+            if(seciliMod === '*') { dogruCevap = s1*s2; se.innerText = `${s1} × ${s2}`; }
+            else { dogruCevap = s1; se.innerText = `${s1*s2} ÷ ${s2}`; }
+        }
+        
+        if (!inpAlani.classList.contains('gizle')) {
+            setTimeout(() => document.getElementById('cevap').focus(), 150);
+        }
         zamanBaslat();
     }
 
-    function kontrolEt() {
-        const cev = parseInt(document.getElementById('cevap').value);
-        if (isNaN(cev)) return;
-        if (cev === dogruCevap) {
-            clearInterval(zamanlayici);
-            puan += 10;
-            document.getElementById('puan').innerText = puan;
-            document.getElementById('mesaj').innerText = "HARİKA! 🌈";
-            confetti({ particleCount: 30, spread: 40, origin: { y: 0.7 } });
-            setTimeout(yeniSoru, 800);
-        } else {
-            can--; 
-            document.getElementById('canlar').innerText = "❤️".repeat(can) || "❌";
-            if (can <= 0) {
-                clearInterval(zamanlayici);
-                let bitisZamani = Date.now();
-                let gecenSureMs = bitisZamani - baslangicZamani;
-                skorKaydet(puan, modAdi, gecenSureMs);
-                setTimeout(() => { alert("Skor: " + puan); başaDön(); }, 300);
+    document.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            if (!document.getElementById('oyun-ekrani').classList.contains('gizle')) {
+                const inp = document.getElementById('cevap');
+                if (inp.value !== "") kontrolEt();
             }
         }
+    });
+
+    function kontrolEt() {
+        const inp = document.getElementById('cevap');
+        const cvp = parseInt(inp.value);
+        if (cvp === dogruCevap) basarili(); else hatali();
+    }
+
+    function sikKontrol(secilen) {
+        if (secilen === dogruCevap) basarili(); else hatali();
+    }
+
+    function basarili() {
+        puan += 10; sesCal('dogru');
+        confetti({ particleCount: 20, spread: 50, origin: { y: 0.7 } });
+        document.getElementById('puan').innerText = puan;
+        setTimeout(yeniSoru, 600);
+    }
+
+    function hatali() {
+        can--; sesCal('hata');
+        document.getElementById('canlar').innerText = "❤️".repeat(can) || "❌";
+        document.getElementById('cevap').value = '';
+        if (can <= 0) {
+            skorKaydet(puan, modAdi, Date.now() - baslangicZamani);
+            alert("Oyun bitti! Skor: " + puan); başaDön();
+        }
+    }
+
+    function zamanBaslat() {
+        clearInterval(zamanlayici); kalanZaman = 25;
+        const bar = document.getElementById('zaman-bar');
+        zamanlayici = setInterval(() => {
+            kalanZaman -= 0.1; bar.style.width = (kalanZaman / 25) * 100 + "%";
+            if (kalanZaman <= 0) clearInterval(zamanlayici);
+        }, 100);
     }
 
     function başaDön() {
@@ -224,43 +280,23 @@
         skorlariGoster();
     }
 
-    function skorKaydet(p, mod, sureMs) {
-        let sk = JSON.parse(localStorage.getItem('matematikSkorlariV3')) || [];
+    function skorKaydet(p, m, sure) {
+        let sk = JSON.parse(localStorage.getItem('mat_v7')) || [];
         let d = new Date();
-        let tarihStr = d.toLocaleDateString('tr-TR') + " " + d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
-        
-        // Süreyi dakika:saniye yap
-        let toplamSaniye = Math.floor(sureMs / 1000);
-        let dk = Math.floor(toplamSaniye / 60);
-        let sn = toplamSaniye % 60;
-        let sureStr = (dk > 0 ? dk + " dk " : "") + sn + " sn";
-
-        sk.push({ puan: p, mod: mod, tarih: tarihStr, sure: sureStr });
-        sk.sort((a,b) => b.puan - a.puan);
-        localStorage.setItem('matematikSkorlariV3', JSON.stringify(sk.slice(0,10))); // İlk 10 skoru sakla
+        let t = d.toLocaleString('tr-TR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'});
+        let s = Math.floor(sure/1000) + " sn";
+        sk.push({p, m, t, s}); sk.sort((a,b) => b.p - a.p);
+        localStorage.setItem('mat_v7', JSON.stringify(sk.slice(0,10)));
     }
 
     function skorlariGoster() {
-        let sk = JSON.parse(localStorage.getItem('matematikSkorlariV3')) || [];
-        const liste = document.getElementById('liderlik-listesi');
-        if (sk.length === 0) { liste.innerHTML = "<p style='font-size:11px; color:gray;'>Henüz skor yok ✨</p>"; return; }
-        
-        liste.innerHTML = sk.map(s => {
-            let cls = s.mod === 'Çarpma' ? 'etiket-carpma' : (s.mod === 'Bölme' ? 'etiket-bolme' : (s.mod === 'Problem' ? 'etiket-problem' : 'etiket-karisik'));
-            return `<div class="skor-item">
-                <div class="skor-ust">
-                    <span>🏆 <b>${s.puan} Puan</b></span>
-                    <span class="mod-etiket ${cls}">${s.mod}</span>
-                </div>
-                <div class="skor-alt">
-                    <span>📅 ${s.tarih}</span>
-                    <span>⏱️ ${s.sure}</span>
-                </div>
-            </div>`;
-        }).join('');
+        let sk = JSON.parse(localStorage.getItem('mat_v7')) || [];
+        document.getElementById('liderlik-listesi').innerHTML = sk.map(s => `
+            <div class="skor-item">
+                <div class="skor-ust"><b>🏆 ${s.p} Puan</b> <span class="mod-etiket" style="background:var(--turuncu)">${s.m}</span></div>
+                <div style="font-size:9px; color:gray">📅 ${s.t} | ⏱️ ${s.s}</div>
+            </div>`).join('') || "Skor yok ✨";
     }
-
-    document.getElementById('cevap').addEventListener('keyup', (e) => { if(e.key === "Enter") kontrolEt(); });
 </script>
 </body>
 </html>
